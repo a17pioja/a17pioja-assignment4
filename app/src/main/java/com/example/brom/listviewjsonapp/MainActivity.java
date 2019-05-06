@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,7 +14,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 
-// Create a new class, Mountain, that can hold your JSON data
+// Create a new class, com.example.brom.listviewjsonapp.Mountain, that can hold your JSON data
 
 // Create a ListView as in "Assignment 1 - Toast and ListView"
 
@@ -30,8 +31,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-    }
 
+        Mountain m = new Mountain("Fuji","Japan",3776);
+        TextView mytextview = (TextView) findViewById(R.id.myInfo);
+        mytextview.setText(m.info());
+    }
+/*
     private class FetchData extends AsyncTask<Void,Void,String>{
         @Override
         protected String doInBackground(Void... params) {
@@ -100,8 +105,9 @@ public class MainActivity extends AppCompatActivity {
             // the un-parsed JSON string or is null if we had an IOException during the fetch.
 
             // Implement a parsing code that loops through the entire JSON and creates objects
-            // of our newly created Mountain class.
+            // of our newly created com.example.brom.listviewjsonapp.Mountain class.
         }
     }
+    */
 }
 
