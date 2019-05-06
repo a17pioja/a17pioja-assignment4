@@ -4,6 +4,8 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -16,6 +18,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 
 // Create a new class, com.example.brom.listviewjsonapp.Mountain, that can hold your JSON data
@@ -29,24 +33,30 @@ import java.net.URL;
 // Implement a "refresh" functionality using Android's menu system
 
 
+
+
+
+
 public class MainActivity extends AppCompatActivity {
+    private ArrayAdapter<Mountain> adapter;
+    //private ArrayList<String> listData = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        new FetchData().execute();
 
+        adapter= new ArrayAdapter(getApplicationContext(),R.layout.list_item_textview,
+                R.id.my_item_textview);
 
-        /*
-        Mountain m = new Mountain("Fuji","Japan",3776);
-        TextView mytextview = (TextView) findViewById(R.id.myInfo);
-        mytextview.setText(m.info());
-        */
+        ListView myListView = (ListView)findViewById(R.id.myListView);
+        myListView.setAdapter(adapter);
     }
 
     private class FetchData extends AsyncTask<Void,Void,String>{
         //Moved jsonStr out of doinbackground
-        String jsonStr = null;
+
 
 
         @Override
@@ -55,19 +65,40 @@ public class MainActivity extends AppCompatActivity {
             Log.d("brom","DataFetched");
             // This code executes after we have received our data. The String object o holds
             // the un-parsed JSON string or is null if we had an IOException during the fetch.
-            try {
-                JSONObject json1 = new JSONObject(jsonStr);
-                JSONArray mountainNames = new JSONArray("name");
-                JSONArray mountainLocations = new JSONArray("location");
-                JSONArray mountainHeight = new JSONArray("height");
 
+            try {
+                JSONArray json1 = new JSONArray(o);
+
+
+
+                Log.d("jsontest","I'm here");
+                int i=json1.length();
+                for (int x = 0; x < i; x++){
+                    JSONObject jsonOb = json1.getJSONObject(x);
+                    Log.d("jsontest",jsonOb.getString("name"));
+                    Log.d("jsontest",jsonOb.getString("size"));
+                    Log.d("jsontest",jsonOb.getString("location"));
+
+                    String name = jsonOb.getString("name");
+                    String location = jsonOb.getString("location");
+                    String heightStr = jsonOb.getString("size");
+                    int height = Integer.parseInt(heightStr);
+
+                    Mountain m = new Mountain(name, location, height);
+                    adapter.add(m);
+                }
+
+
+                /*
                 Mountain m = new Mountain("Fuji","Japan",3776);
                 TextView mytextview = (TextView) findViewById(R.id.my_item_textview);
                 mytextview.setText(m.info());
+                */
 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
             // Implement a parsing code that loops through the entire JSON and creates objects
             // of our newly created com.example.brom.listviewjsonapp.Mountain class.
         }
@@ -81,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
             BufferedReader reader = null;
 
             // Will contain the raw JSON response as a Java string.
-
+            String jsonStr = null;
 
 
 

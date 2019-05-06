@@ -20,5 +20,10 @@ public class Mountain {
         str+=" m";
         return str;
     }
+
+    @Override
+    public String toString() {
+        return name+location+height;
+    }
 }
 
