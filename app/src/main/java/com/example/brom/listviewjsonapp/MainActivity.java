@@ -6,6 +6,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,7 +20,7 @@ import java.net.URL;
 
 // Create a new class, com.example.brom.listviewjsonapp.Mountain, that can hold your JSON data
 
-// Create a ListView as in "Assignment 1 - Toast and ListView"
+// Create a ListView as in "Assignment 2 - Toast and ListView"
 
 // Retrieve data from Internet service using AsyncTask and the included networking code
 
@@ -32,12 +36,43 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+        /*
         Mountain m = new Mountain("Fuji","Japan",3776);
         TextView mytextview = (TextView) findViewById(R.id.myInfo);
         mytextview.setText(m.info());
+        */
     }
-/*
+
     private class FetchData extends AsyncTask<Void,Void,String>{
+        //Moved jsonStr out of doinbackground
+        String jsonStr = null;
+
+
+        @Override
+        protected void onPostExecute(String o) {
+            super.onPostExecute(o);
+            Log.d("brom","DataFetched");
+            // This code executes after we have received our data. The String object o holds
+            // the un-parsed JSON string or is null if we had an IOException during the fetch.
+            try {
+                JSONObject json1 = new JSONObject(jsonStr);
+                JSONArray mountainNames = new JSONArray("name");
+                JSONArray mountainLocations = new JSONArray("location");
+                JSONArray mountainHeight = new JSONArray("height");
+
+                Mountain m = new Mountain("Fuji","Japan",3776);
+                TextView mytextview = (TextView) findViewById(R.id.my_item_textview);
+                mytextview.setText(m.info());
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            // Implement a parsing code that loops through the entire JSON and creates objects
+            // of our newly created com.example.brom.listviewjsonapp.Mountain class.
+        }
+
+
         @Override
         protected String doInBackground(Void... params) {
             // These two variables need to be declared outside the try/catch
@@ -46,11 +81,13 @@ public class MainActivity extends AppCompatActivity {
             BufferedReader reader = null;
 
             // Will contain the raw JSON response as a Java string.
-            String jsonStr = null;
+
+
+
 
             try {
                 // Construct the URL for the Internet service
-                URL url = new URL("_ENTER_THE_URL_TO_THE_PHP_SERVICE_SERVING_JSON_HERE_");
+                URL url = new URL("http://wwwlab.iit.his.se/brom/kurser/mobilprog/dbservice/admin/getdataasjson.php?type=brom");
 
                 // Create the request to the PHP-service, and open the connection
                 urlConnection = (HttpURLConnection) url.openConnection();
@@ -98,16 +135,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-        @Override
-        protected void onPostExecute(String o) {
-            super.onPostExecute(o);
-            // This code executes after we have received our data. The String object o holds
-            // the un-parsed JSON string or is null if we had an IOException during the fetch.
 
-            // Implement a parsing code that loops through the entire JSON and creates objects
-            // of our newly created com.example.brom.listviewjsonapp.Mountain class.
-        }
     }
-    */
+
 }
 
