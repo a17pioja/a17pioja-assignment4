@@ -19,6 +19,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -42,6 +43,10 @@ import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
     private ArrayAdapter<Mountain> adapter;
+
+    private String[] mountainNames;
+    private String[] mountainLocations;
+    private int[] mountainHeights;
     //private ArrayList<String> listData = new ArrayList<>();
 
     @Override
@@ -53,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
         adapter= new ArrayAdapter(getApplicationContext(),R.layout.list_item_textview,
                 R.id.my_item_textview);
 
+
+
         ListView myListView = (ListView)findViewById(R.id.myListView);
         myListView.setAdapter(adapter);
 
@@ -60,10 +67,19 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+                /*
+                Mountain m = new Mountain("Fuji","Japan",3776);
+                TextView mytextview = (TextView) findViewById(R.id.my_item_textview);
+                mytextview.setText(m.info());
+                */
+
+                //Send mountain object using position variable as index number to info function
+                String mytext = "test toast";
 
 
-                String mytext = "yes";
-                Toast.makeText(getApplicationContext(), String.valueOf(mytext), Toast.LENGTH_LONG).show();
+
+
+                Toast.makeText(getApplicationContext(),adapter.getItem(position).info(), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -97,14 +113,12 @@ public class MainActivity extends AppCompatActivity {
 
                     Mountain m = new Mountain(name, location, height);
                     adapter.add(m);
+
+
                 }
 
 
-                /*
-                Mountain m = new Mountain("Fuji","Japan",3776);
-                TextView mytextview = (TextView) findViewById(R.id.my_item_textview);
-                mytextview.setText(m.info());
-                */
+
 
             } catch (JSONException e) {
                 e.printStackTrace();
