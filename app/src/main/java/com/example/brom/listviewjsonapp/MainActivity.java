@@ -1,9 +1,12 @@
 package com.example.brom.listviewjsonapp;
 
+import android.content.ClipData;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -26,28 +29,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 
-// Create a new class, com.example.brom.listviewjsonapp.Mountain, that can hold your JSON data
-
-// Create a ListView as in "Assignment 2 - Toast and ListView"
-
-// Retrieve data from Internet service using AsyncTask and the included networking code
-
-// Parse the retrieved JSON and update the ListView adapter
-
-// Implement a "refresh" functionality using Android's menu system
-
-
-
-
-
-
 public class MainActivity extends AppCompatActivity {
     private ArrayAdapter<Mountain> adapter;
 
     private String[] mountainNames;
     private String[] mountainLocations;
     private int[] mountainHeights;
-    //private ArrayList<String> listData = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,8 +45,6 @@ public class MainActivity extends AppCompatActivity {
         adapter= new ArrayAdapter(getApplicationContext(),R.layout.list_item_textview,
                 R.id.my_item_textview);
 
-
-
         ListView myListView = (ListView)findViewById(R.id.myListView);
         myListView.setAdapter(adapter);
 
@@ -67,21 +52,28 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                /*
-                Mountain m = new Mountain("Fuji","Japan",3776);
-                TextView mytextview = (TextView) findViewById(R.id.my_item_textview);
-                mytextview.setText(m.info());
-                */
-
-                //Send mountain object using position variable as index number to info function
-                String mytext = "test toast";
-
-
-
-
                 Toast.makeText(getApplicationContext(),adapter.getItem(position).info(), Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.menu_main,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem Item){
+        int id = Item.getItemId();
+        if (id ==R.id.action_refresh){
+            adapter.clear();
+            new FetchData().execute();
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 
     private class FetchData extends AsyncTask<Void,Void,String>{
